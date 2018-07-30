@@ -1,0 +1,19 @@
+{
+  "name": "twitter-essay-writer",
+  "version": "1.0.0",
+  "description": "Yet another weekly project, this time with 100% more ML!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kaelinator/twitter-essay-writer.git"
+  },
+  "author": "Kael Kirk",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Kaelinator/twitter-essay-writer/issues"
+  },
+  "homepage": "https://github.com/Kaelinator/twitter-essay-writer#readme"
+}
