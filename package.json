@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/Kaelinator/twitter-essay-writer/issues"
   },
-  "homepage": "https://github.com/Kaelinator/twitter-essay-writer#readme"
+  "homepage": "https://github.com/Kaelinator/twitter-essay-writer#readme",
+  "dependencies": {
+    "@tensorflow/tfjs-core": "^0.12.8"
+  }
 }
