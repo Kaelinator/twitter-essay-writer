@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Kaelinator/twitter-essay-writer#readme",
   "dependencies": {
-    "@tensorflow/tfjs-core": "^0.12.8"
+    "@tensorflow/tfjs": "^0.12.4",
+    "@tensorflow/tfjs-node": "^0.1.9"
   }
 }
