@@ -1,25 +1,29 @@
 const tf = require('@tensorflow/tfjs')
 require('@tensorflow/tfjs-node')
 
-const cells = [
-  tf.layers.lstmCell({units: 4}),
-  tf.layers.lstmCell({units: 8})
-]
+const inputs = tf.input({shape: [3, 10]})
 
-const model = tf.sequential({ 
-  layers: [
-    tf.layers.dense({ units: 1, activation: 'sigmoid', inputShape: [2] }),
-    tf.layers.rnn({cell: cells, returnSequences: true }),
-    // tf.layers.dense({ units: 1, activation: 'sigmoid' }),
-    tf.layers.dense({ units: 1, activation: 'sigmoid' })
-    // tf.layers.lstm({ units: 100, activation: 'sigmoid', returnSequences: true }),
-  ]
+const rnn = tf.layers.rnn({
+  cell: [
+    tf.layers.lstmCell({units: 5}),
+    tf.layers.lstmCell({units: 12}),
+    tf.layers.lstmCell({units: 1}),
+  ],
+  returnSequences: true
 })
 
-model.compile({
-  optimizer: 'sgd',
-  loss: 'meanSquaredError'
-})
+const outputs = rnn.apply(inputs)
+
+const model = tf.model({ inputs, outputs })
+
+model.predict(tf.randomNormal([5, 3, 10])).print()
+
+
+
+// model.compile({
+//   optimizer: 'sgd',
+//   loss: 'meanSquaredError'
+// })
 
 // const xs = tf.randomNormal([100, 2])
 // const ys = tf.randomNormal([100, 1])
