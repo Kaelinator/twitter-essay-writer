@@ -1,8 +1,6 @@
 const tf = require('@tensorflow/tfjs')
 require('@tensorflow/tfjs-node')
 
-const inputs = tf.input({shape: [3, 10]})
-
 const rnn = tf.layers.rnn({
   cell: [
     tf.layers.lstmCell({units: 5}),
@@ -12,18 +10,20 @@ const rnn = tf.layers.rnn({
   returnSequences: true
 })
 
-const outputs = rnn.apply(inputs)
+const model = tf.sequential({
+  layers: [
+    tf.layers.dense({ units: 50, inputShape: [3, 10]}),
+    rnn
+  ]
+})
 
-const model = tf.model({ inputs, outputs })
+
+model.compile({
+  optimizer: 'sgd',
+  loss: 'meanSquaredError'
+})
 
 model.predict(tf.randomNormal([5, 3, 10])).print()
-
-
-
-// model.compile({
-//   optimizer: 'sgd',
-//   loss: 'meanSquaredError'
-// })
 
 // const xs = tf.randomNormal([100, 2])
 // const ys = tf.randomNormal([100, 1])
