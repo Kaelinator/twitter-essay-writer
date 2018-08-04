@@ -27,14 +27,14 @@ const data = Int32Array.from(Array(1000)
   .fill(0)
   .reduce((arr, x, i) => arr.concat((i).toString().split('')), []), x => +x)
 
-const xs = tf.tensor1d(data).reshape([289, 10, 1])
-const ys = tf.tensor1d(Array.from(data).map(x => { 
+const ddata = Array.from(data.slice(1)).reduce((a, x) => { 
   const arr = Array(10).fill(0)
   arr[x] = 1
-  return Int32Array.from(arr)
-})).reshape([289, 10, 10])
-console.log(xs.shape)
-console.log(ys.shape)
+  return a.concat(arr)
+}, [])
+
+const xs = tf.tensor1d(data).reshape([289, 10, 1])
+const ys = tf.tensor1d([...ddata, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]).reshape([289, 10, 10])
 
 model.fit(xs, ys, {
   epochs: 1,
