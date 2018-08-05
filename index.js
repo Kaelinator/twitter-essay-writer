@@ -66,3 +66,4 @@ const trainModel = () => {
 }
 
 setInterval(sendTweet, +process.env.TWEET_INTERVAL)
+trainModel()
