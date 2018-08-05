@@ -22,12 +22,12 @@ const sendTweet = () => {
     .data()
     .then(toTweet)
     .then(console.log)
-    // .then(status => {
-    //   T.post('statuses/update', { status }, (err, data) => {
-    //     if (err) console.log('Error: ', err)
-    //     if (data) console.log('Data: ', data)
-    //   })
-    // })
+    .then(status => {
+      T.post('statuses/update', { status }, (err, data) => {
+        if (err) console.log('Error: ', err)
+        if (data) console.log('Data: ', data)
+      })
+    })
   })
 }
   
@@ -42,27 +42,27 @@ const trainModel = () => {
   }
   
   getModel()
-  .then(model => 
-    T.get('search/tweets', params, (err, { statuses }) => {
-      if (err) return console.log(err)
+    .then(model => 
+      T.get('search/tweets', params, (err, { statuses }) => {
+        if (err) return console.log(err)
 
-      const [xs, ys] = prepareBatch(statuses)
-      model.fit(xs, ys, {
-        epochs: 10,
-        batchSize: statuses.length,
-        callbacks: {
-          onEpochEnd: (epoch, log) => {
-            console.log(`Epoch ${epoch}: loss = ${log.loss}`)
-          },
-          onTrainEnd: () => {
-            console.log('End of training')
-            model.save(process.env.MODEL_PATH)
-            trainModel() // do it again
+        const [xs, ys] = prepareBatch(statuses)
+        model.fit(xs, ys, {
+          epochs: 10,
+          batchSize: statuses.length,
+          callbacks: {
+            onEpochEnd: (epoch, log) => {
+              console.log(`Epoch ${epoch}: loss = ${log.loss}`)
+            },
+            onTrainEnd: () => {
+              console.log('End of training')
+              model.save(process.env.MODEL_PATH)
+              trainModel() // do it again
+            }
           }
-        }
+        })
       })
-    })
-  )
+    )
 }
 
 setInterval(sendTweet, +process.env.TWEET_INTERVAL)
