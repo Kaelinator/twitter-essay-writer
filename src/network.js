@@ -1,7 +1,7 @@
 const tf = require('@tensorflow/tfjs')
 require('@tensorflow/tfjs-node')
 
-module.exports = () => tf.loadModel(process.env.MODEL_PATH)
+module.exports = () => tf.loadModel(process.env.MODEL_PATH + 'model.json')
   .catch((err) => {
 
     console.log('Error loading model, generating new model:',
