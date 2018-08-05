@@ -4,6 +4,7 @@
   "description": "Yet another weekly project, this time with 100% more ML!",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,6 +19,9 @@
   "homepage": "https://github.com/Kaelinator/twitter-essay-writer#readme",
   "dependencies": {
     "@tensorflow/tfjs": "^0.12.4",
-    "@tensorflow/tfjs-node": "^0.1.11"
+    "@tensorflow/tfjs-node": "^0.1.11",
+    "dateformat": "^3.0.3",
+    "dotenv": "^6.0.0",
+    "twit": "^2.2.11"
   }
 }
