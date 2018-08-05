@@ -14,10 +14,8 @@ const toTweet = array => {
   for (let i = 0, j = array.length; i < j; i += +process.env.RANGE)
       temparray.push(array.slice(i, i + +process.env.RANGE))
 
-  return temparray
-    .map(arr => arr.indexOf(Math.max(...arr)))
-    .map(String.fromCharCode)
-    .join()
+  return String.fromCharCode(...temparray
+    .map(arr => arr.indexOf(Math.max(...arr))))
 }
 
 const flatten = (a, t) => a.concat(t)

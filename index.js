@@ -19,15 +19,14 @@ const sendTweet = () => {
   .then(model => {
     
     model.predict(toInput('This is my tweet'))
-    .data()
-    .then(toTweet)
-    .then(console.log)
-    .then(status => {
-      T.post('statuses/update', { status }, (err, data) => {
-        if (err) console.log('Error: ', err)
-        if (data) console.log('Data: ', data)
+      .data()
+      .then(toTweet)
+      .then(status => {
+        console.log(status)
+        T.post('statuses/update', { status }, (err, data) => {
+          if (err) console.log('Error tweeting: ', err)
+        })
       })
-    })
   })
 }
   
@@ -38,15 +37,15 @@ const trainModel = () => {
   const params = {
     language: 'en',
     q: 'essay OR college OR write',
-    count: 1000
+    count: 100
   }
   
   getModel()
     .then(model => 
       T.get('search/tweets', params, (err, { statuses }) => {
         if (err) return console.log(err)
-
         const [xs, ys] = prepareBatch(statuses)
+
         model.fit(xs, ys, {
           epochs: 10,
           batchSize: statuses.length,

@@ -1,28 +1,40 @@
 const tf = require('@tensorflow/tfjs')
 require('@tensorflow/tfjs-node')
+const Promise = require('bluebird')
 
-module.exports = () => tf.loadModel(process.env.MODEL_PATH + 'model.json')
-  .catch((err) => {
+const compConfig = {
+  optimizer: tf.train.sgd(0.1),
+  loss: 'meanSquaredError'
+}
+let globalModel = null
 
-    console.log('Error loading model, generating new model:',
-      process.MODEL_PATH, JSON.stringify(err))
+module.exports = () => globalModel 
+  ? Promise.resolve(globalModel) 
+  : tf.loadModel(process.env.MODEL_PATH + 'model.json')
+    .then(model => {
 
-    const model = tf.sequential({
-      layers: [
-        tf.layers.dense({ units: +process.env.TWEET_LENGTH, inputShape: [+process.env.TWEET_LENGTH, 1] }),
-        tf.layers.lstm({
-          units: 512,
-          returnSequences: true,
-          recurrentActivation: 'softplus'
-        }),
-        tf.layers.dense({ units: +process.env.RANGE })
-      ]
+      model.compile(compConfig)
+
+      globalModel = model
+      return model
     })
-    
-    model.compile({
-      optimizer: 'sgd',
-      loss: 'meanSquaredError'
-    })
+    .catch(() => {
 
-    return model
-  })
+      console.log('Error loading model, generating new model:', process.env.MODEL_PATH)
+
+      const model = tf.sequential({
+        layers: [
+          tf.layers.lstm({
+            units: +process.env.LSTM_UNITS,
+            returnSequences: true,
+            inputShape: [+process.env.TWEET_LENGTH, 1]
+          }),
+          tf.layers.dense({ units: +process.env.RANGE })
+        ]
+      })
+
+      model.compile(compConfig)
+
+      globalModel = model
+      return model
+    })
