@@ -12,20 +12,37 @@ const T = new Twit({
   access_token_secret: process.env.ACCESS_TOKEN_SECRET
 })
 
+let lastTweet = 'This is my tweet'
+
 const sendTweet = () => {
   console.log('Tweet time!')
   
   getModel()
   .then(model => {
-    
-    model.predict(toInput('This is my tweet'))
+    console.log('input: ', JSON.stringify(lastTweet))
+    model.predict(toInput(lastTweet))
       .data()
       .then(toTweet)
       .then(status => {
-        console.log(status)
-        T.post('statuses/update', { status }, (err, data) => {
-          if (err) console.log('Error tweeting: ', err)
-        })
+        console.log('Tweet:', JSON.stringify(status))
+          T.post('statuses/update', { status }, (err, data) => {
+            if (err) console.log('Error tweeting: ', err)
+          })
+      })
+  })
+}
+
+const predictTweet = () => {
+  console.log('Predict time!')
+  
+  getModel()
+  .then(model => {
+    console.log('input: ', JSON.stringify(lastTweet))
+    model.predict(toInput(lastTweet))
+      .data()
+      .then(toTweet)
+      .then(status => {
+        console.log('Tweet:', JSON.stringify(status))
       })
   })
 }
@@ -36,7 +53,7 @@ const trainModel = () => {
 
   const params = {
     language: 'en',
-    q: 'essay OR college OR write',
+    q: 'essay OR college OR write OR story',
     count: 100
   }
   
@@ -45,6 +62,8 @@ const trainModel = () => {
       T.get('search/tweets', params, (err, { statuses }) => {
         if (err) return console.log(err)
         const [xs, ys] = prepareBatch(statuses)
+
+        lastTweet = statuses.slice(-1)[0].text
 
         model.fit(xs, ys, {
           epochs: 10,
@@ -56,6 +75,7 @@ const trainModel = () => {
             onTrainEnd: () => {
               console.log('End of training')
               model.save(process.env.MODEL_PATH)
+              predictTweet()
               trainModel() // do it again
             }
           }
