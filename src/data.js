@@ -22,9 +22,7 @@ const flatten = (a, t) => a.concat(t)
 
 const prepareBatch = (tweets) => {
 
-  const data = tweets
-    .map(tweet => tweet.text)
-    .map(toData)
+  const data = tweets.map(toData)
   
   const xs = tf.tensor1d(
     Int32Array.from(data.reduce(flatten, []))

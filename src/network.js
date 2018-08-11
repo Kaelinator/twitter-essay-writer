@@ -4,7 +4,7 @@ const Promise = require('bluebird')
 
 const compConfig = {
   optimizer: 'sgd',
-  loss: 'meanSquaredError'
+  loss: 'categoricalCrossentropy'
 }
 let globalModel = null
 

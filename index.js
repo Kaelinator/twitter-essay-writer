@@ -13,7 +13,8 @@ const T = new Twit({
   access_token_secret: process.env.ACCESS_TOKEN_SECRET
 })
 
-let lastTweet = 'This is my tweet'
+// let lastTweet = 'This is my tweet'
+let lastTweet = 'zabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz'
 
 const sendTweet = () => {
   console.log('Tweet time!')
@@ -56,6 +57,8 @@ const trainModel = () => {
     lang: 'en',
     q: 'essay OR college OR write OR story',
     count: 100,
+    result_type: 'recent',
+    tweet_mode: 'extended',
     f: 'tweet'
   }
   
@@ -63,15 +66,22 @@ const trainModel = () => {
     .then(model => 
       T.get('search/tweets', params, (err, { statuses }) => {
         if (err) return console.log(err)
-        const [xs, ys] = prepareBatch(statuses)
 
-        fs.writeFile(`network/data/${Date.now()}.json`, JSON.stringify(statuses))
+        // const tweets = statuses.map(status => status.full_text)
+        // const avgLength = tweets.reduce((sum, t) => t.length + sum, 0) / tweets.length
+        // const purgedTweets = tweets.filter(t => t.length > avgLength)
+        const purgedTweets = Array(128)
+          .fill('abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz')
+          .map((x, i) => i % 2 === 0 ? 'z' + x : x)
+        const [xs, ys] = prepareBatch(purgedTweets)
 
-        lastTweet = statuses.slice(-1)[0].text
+        fs.writeFile(`network/data/${Date.now()}.json`, JSON.stringify(purgedTweets), (err) => err && console.log('error writing file:', err))
+
+        // lastTweet = purgedTweets.slice(-1)[0]
 
         model.fit(xs, ys, {
-          epochs: 10,
-          batchSize: statuses.length,
+          epochs: 36,
+          batchSize: purgedTweets.length,
           callbacks: {
             onEpochEnd: (epoch, log) => {
               console.log(`Epoch ${epoch}: loss = ${log.loss}`)
@@ -88,5 +98,5 @@ const trainModel = () => {
     )
 }
 
-setInterval(sendTweet, +process.env.TWEET_INTERVAL)
+// setInterval(sendTweet, +process.env.TWEET_INTERVAL)
 trainModel()
