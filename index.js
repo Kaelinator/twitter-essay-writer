@@ -4,6 +4,7 @@ const Twit = require('twit')
 
 const getModel = require('./src/network')
 const { toInput, toTweet, prepareBatch } = require('./src/data')
+const fs = require('fs')
 
 const T = new Twit({
   consumer_key: process.env.CONSUMER_KEY,
@@ -52,9 +53,10 @@ const trainModel = () => {
   console.log('training...')
 
   const params = {
-    language: 'en',
+    lang: 'en',
     q: 'essay OR college OR write OR story',
-    count: 100
+    count: 100,
+    f: 'tweet'
   }
   
   getModel()
@@ -62,6 +64,8 @@ const trainModel = () => {
       T.get('search/tweets', params, (err, { statuses }) => {
         if (err) return console.log(err)
         const [xs, ys] = prepareBatch(statuses)
+
+        fs.writeFile(`network/data/${Date.now()}.json`, JSON.stringify(statuses))
 
         lastTweet = statuses.slice(-1)[0].text
 

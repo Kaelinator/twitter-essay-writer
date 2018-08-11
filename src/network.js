@@ -3,7 +3,7 @@ require('@tensorflow/tfjs-node')
 const Promise = require('bluebird')
 
 const compConfig = {
-  optimizer: tf.train.sgd(0.1),
+  optimizer: 'sgd',
   loss: 'meanSquaredError'
 }
 let globalModel = null
